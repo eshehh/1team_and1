@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "317986852594",
+    "project_id": "ggestagram",
+    "storage_bucket": "ggestagram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317986852594:android:a31701eb891691e06d8a6b",
+        "android_client_info": {
+          "package_name": "com.example.ggestagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "317986852594-fjheqr2faod4ppvdlcuis7kamu0gsqqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI_2J4tKJQ0_YYjDKSvvwDPcwafWVk9Cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "317986852594-fjheqr2faod4ppvdlcuis7kamu0gsqqp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
