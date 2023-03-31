@@ -22,6 +22,7 @@ import com.example.ggestagram.CameraActivity
 import com.example.ggestagram.LoginActivity
 import com.example.ggestagram.MainActivity
 import com.example.ggestagram.R
+import com.example.ggestagram.navigation.model.AlarmDTO
 import com.example.ggestagram.navigation.model.ContentDTO
 import com.example.ggestagram.navigation.model.FollowerDTO
 import com.google.firebase.auth.FirebaseAuth
@@ -181,6 +182,21 @@ class UserFragment : Fragment() {
 //        followListenerRegistration?.remove
 //
 
+    // 팔로워 알림
+    fun followerAlarm(destinationUid : String){
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth?.currentUser?.email
+        alarmDTO.uid = auth?.currentUser?.uid
+        alarmDTO.kind = 2
+        alarmDTO.timestamp = System.currentTimeMillis()
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+
+        // 팔로워 푸시 이벤트
+//        var message = auth?.currentUser?.email + " "+getString(R.string.alarm_follow)
+//        FcmPush.instance.sendMessage(destinationUid,"Stagram",message)
+    }
+
 
     // 팔로우
     fun requestFollow(){
@@ -216,7 +232,7 @@ class UserFragment : Fragment() {
                 followDTO = FollowerDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
-
+                followerAlarm(uid!!)
 
 
             }
@@ -230,7 +246,7 @@ class UserFragment : Fragment() {
                 } else {
                     followDTO!!.followerCount = followDTO!!.followerCount + 1
                     followDTO!!.followers[currentUserUid!!] = true
-
+                    followerAlarm(uid!!)
                 }
             }
             it.set(tsDocFollower,followDTO!!)

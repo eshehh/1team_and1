@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.ggestagram.DoubleClickListener
 import com.example.ggestagram.MainActivity
 import com.example.ggestagram.R
+import com.example.ggestagram.navigation.model.AlarmDTO
 import com.example.ggestagram.navigation.model.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -208,7 +209,7 @@ class DetailViewFragment : Fragment() {
                 } else {
                     contentDTO?.favoriteCount = contentDTO?.favoriteCount + 1
                     contentDTO?.favorites[uid!!] = true
-
+                    favoriteAlarm(contentDTOs[position].uid!!)
                 }
                 it.set(tsDoc, contentDTO)
             }
@@ -217,6 +218,20 @@ class DetailViewFragment : Fragment() {
         }
     }
 
+    // 좋아요 알림
+    fun favoriteAlarm(destinationUid : String){
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = FirebaseAuth.getInstance().currentUser?.email
+        alarmDTO.uid = FirebaseAuth.getInstance().currentUser?.uid
+        alarmDTO.kind = 0
+        alarmDTO.timestamp = System.currentTimeMillis()
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+
+        // 좋아요 푸시 이벤트
+//        var message = FirebaseAuth.getInstance()?.currentUser?.email + " "+ getString(R.string.alarm_favorite)
+//        FcmPush.instance.sendMessage(destinationUid,"Stagram",message)
+    }
 
     companion object {
         /**

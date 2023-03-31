@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.ggestagram.R
+import com.example.ggestagram.navigation.model.AlarmDTO
 import com.example.ggestagram.navigation.model.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,6 +45,18 @@ class CommentActivity : AppCompatActivity() {
             FirebaseFirestore.getInstance().collection("images")?.document(contentUid!!)?.collection("comments").document().set(comment)
             comment_edit_message.setText("")
         }
+    }
+
+    // 댓글 알림
+    fun commentAlarm(destinationUid : String, message : String) {
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = FirebaseAuth.getInstance().currentUser?.email
+        alarmDTO.kind = 1
+        alarmDTO.uid = FirebaseAuth.getInstance().currentUser?.uid
+        alarmDTO.timestamp = System.currentTimeMillis()
+        alarmDTO.message = message
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
     }
 
     inner class CommentRecylerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
