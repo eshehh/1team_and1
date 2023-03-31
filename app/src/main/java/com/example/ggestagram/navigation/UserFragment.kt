@@ -93,6 +93,7 @@ class UserFragment : Fragment() {
         currentUserUid = auth?.uid
         //자신의 정보일 경우
         if(uid == currentUserUid){
+            fragmentView?.userid?.text = auth?.currentUser?.email
             fragmentView?.account_btn_follow_signout?.text = getString(R.string.signout)
             fragmentView?.account_btn_follow_signout?.setOnClickListener {
                 activity?.finish()
@@ -134,6 +135,12 @@ class UserFragment : Fragment() {
 
 
         }
+
+//        fragmentView?.camera?.setOnClickListener {
+//            activity?.finish()
+//            var intent = Intent(activity,LoginActivity::class.java)
+//            startActivity(intent)
+//        }
 
         getProfileImage()
         getFollowandFollowing()

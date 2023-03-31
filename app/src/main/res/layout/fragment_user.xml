@@ -7,10 +7,50 @@
     android:background="@color/colorWhite"
     tools:context=".navigation.UserFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/userid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/black" />
+
+
+
+        <ImageView
+            android:id="@+id/camera"
+            android:layout_width="29dp"
+            android:layout_height="32dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="300dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toRightOf="@+id/userid"
+            android:src="@drawable/ic_add_a_photo"
+             />
+
+    </RelativeLayout>
+
+    </RelativeLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/const0"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
 
@@ -100,7 +140,7 @@
                 app:layout_constraintBottom_toBottomOf="parent">
                 <TextView
                     android:id="@+id/account_tv_following"
-                    android:text="@string/post"
+                    android:text="@string/following"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
