@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.ggestagram.DoubleClickListener
 import com.example.ggestagram.MainActivity
 import com.example.ggestagram.R
@@ -91,6 +92,7 @@ class DetailViewFragment : Fragment() {
                         contentUidList.add(snapshot.id)
 
                     }
+                    //새로고침
                     notifyDataSetChanged()
 
                 }
@@ -122,17 +124,39 @@ class DetailViewFragment : Fragment() {
             viewholder.favoritecounter_textview.text =
                 "좋아요 " + contentDTOs[position]!!.favoriteCount + "개"
             //프로필 사진
-            val into = Glide.with(holder.itemView.context).load(contentDTOs[position]!!.imageUrl)
-                .into(viewholder.profile_image)
+//            val into = Glide.with(holder.itemView.context).load(contentDTOs[position]!!.imageUrl)
+//                .into(viewholder.profile_image)
+            //프로필 사진 수정
+            firestore?.collection("profileImages")
+                ?.document(contentDTOs[position].uid!!)
+                ?.get()
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
 
+                        var url = task.result?.get("image")
+
+                        if (url != null) {
+                            Glide.with(holder.itemView.context).load(url)
+                                .apply(RequestOptions().circleCrop())
+                                .into(viewholder.profile_image)
+                        }
+
+                    }
+                }
+            // 좋아요 버튼에 이벤트 추가 수정
+            viewholder.favorite_imageview.setOnClickListener {
+                favoirteEvent(holder.adapterPosition)
+            }
+            // 이미지에 더블클릭하면 좋아요 이벤트 수정
             viewholder.imageview_content.setOnClickListener(object : DoubleClickListener(){
                 override fun onDoubleClick(v: View) {
                     favoirteEvent(holder.adapterPosition)
                 }
             }
-
-
         )
+
+
+
 
             if(contentDTOs!![position].favorites.containsKey(uid)){
                 viewholder.favorite_imageview.setImageResource(R.drawable.ic_favorite)
@@ -140,7 +164,11 @@ class DetailViewFragment : Fragment() {
             else{
                 viewholder.favorite_imageview.setImageResource(R.drawable.ic_favorite_border)
             }
-            viewholder.profile_textview.setOnClickListener {
+
+            // 이것도 위에 것도 동일하게 만들어줘도 됐을듯함(viewholder.profile_image.setOnClickListener {
+            //                메서드 이름 -> profilemove(position)
+            //            })
+           viewholder.profile_textview.setOnClickListener {
                 var userFragment = UserFragment()
                 var bundle = Bundle()
                 bundle.putString("destinationUid",contentDTOs[position].uid)

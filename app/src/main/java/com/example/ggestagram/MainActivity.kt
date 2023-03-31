@@ -73,6 +73,8 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                     .commit()
                 return true
             }
+
+
             R.id.action_account -> {
 
                 var userFragment = UserFragment()

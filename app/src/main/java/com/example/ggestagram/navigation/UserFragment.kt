@@ -86,6 +86,7 @@ class UserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         fragmentView = LayoutInflater.from(activity).inflate(R.layout.fragment_user,container,false)
+        // 넘어온 Uid 받아오기
         uid = arguments?.getString("destinationUid")
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -108,7 +109,7 @@ class UserFragment : Fragment() {
             mainactivity?.toolbar_tv_userid?.text = arguments?.getString("userId")
             mainactivity?.toolbar_btn_back?.setOnClickListener {
                 mainactivity.bottom_navigation.selectedItemId = R.id.action_home
-            }
+            } // 디테일 화면으로 돌아가기
 
             mainactivity?.toolbar_title_image?.visibility = View.GONE
             mainactivity?.toolbar_tv_userid?.visibility = View.VISIBLE
@@ -120,11 +121,11 @@ class UserFragment : Fragment() {
         }
 
 
-
+        // 어댑터 연결
         fragmentView?.account_recylerview?.adapter = UserFragmentRecylerView()
         fragmentView?.account_recylerview?.layoutManager = GridLayoutManager(activity,3)
 
-
+        // 프로필 사진 클릭
         fragmentView?.asccount_iv_profile?.setOnClickListener {
 
             var photoPickerIntent = Intent(Intent.ACTION_PICK)
@@ -157,7 +158,7 @@ class UserFragment : Fragment() {
                     fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow_cancel)
                 }
                 else{
-                     fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
+                    fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
 
                 }
             }
@@ -165,7 +166,14 @@ class UserFragment : Fragment() {
         }
     }
 
+//    override fun onStop() {
+//        super.onStop()
+//        ex) var = followListenerRegistration: ListenerRegistration? = null
+//        followListenerRegistration?.remove
+//
 
+
+    // 팔로우
     fun requestFollow(){
         // my follower
         var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
@@ -173,6 +181,7 @@ class UserFragment : Fragment() {
             var followDTO =  it.get(tsDocFollowing!!).toObject(FollowerDTO::class.java)
 
             if (followDTO == null){
+                // 팔로우 정보가 없을 때 생성
                 followDTO = FollowerDTO()
                 followDTO!!.followingCount = 1
                 followDTO!!.followers[uid!!] = true
