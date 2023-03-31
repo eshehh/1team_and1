@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.ggestagram.CameraActivity
 import com.example.ggestagram.LoginActivity
 import com.example.ggestagram.MainActivity
 import com.example.ggestagram.R
@@ -115,6 +116,7 @@ class UserFragment : Fragment() {
             mainactivity?.toolbar_title_image?.visibility = View.GONE
             mainactivity?.toolbar_tv_userid?.visibility = View.VISIBLE
             mainactivity?.toolbar_btn_back?.visibility = View.VISIBLE
+            fragmentView?.camera?.visibility = View.GONE
             fragmentView?.account_btn_follow_signout?.setOnClickListener {
                 requestFollow()
             }
@@ -136,11 +138,11 @@ class UserFragment : Fragment() {
 
         }
 
-//        fragmentView?.camera?.setOnClickListener {
-//            activity?.finish()
-//            var intent = Intent(activity,LoginActivity::class.java)
-//            startActivity(intent)
-//        }
+        fragmentView?.camera?.setOnClickListener {
+            activity?.finish()
+            var intent = Intent(activity, CameraActivity::class.java)
+            startActivity(intent)
+        }
 
         getProfileImage()
         getFollowandFollowing()

@@ -28,9 +28,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="메시지"
+        android:onClick="onDeleteButtonClick"
         android:textSize="18sp"
         android:layout_margin="7.5dp"
         app:layout_constraintLeft_toRightOf="@id/comment_textview_profile"
         app:layout_constraintTop_toTopOf="@id/comment_imageview_profile" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

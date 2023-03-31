@@ -1,10 +1,12 @@
 package com.example.ggestagram.navigation
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_comment.*
 import kotlinx.android.synthetic.main.item_comment.*
 import kotlinx.android.synthetic.main.item_comment.view.*
+import kotlinx.android.synthetic.main.item_detail.view.*
 
 
 class CommentActivity : AppCompatActivity() {
@@ -78,6 +81,48 @@ class CommentActivity : AppCompatActivity() {
                     }
 
                 }
+            view.comment_textview_comment.setOnClickListener {
+                deleteCommentData(comments[position].uid!!, comments[position].comment!!)
+            }
+        }
+
+        private fun deleteCommentData(uid: String, comment: String) {
+            val alertDialogBuilder = AlertDialog.Builder(this@CommentActivity)
+            alertDialogBuilder.setMessage("댓글을 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("삭제") { dialog, id ->
+                    FirebaseFirestore.getInstance()
+                        .collection("images")
+                        .document(contentUid!!)
+                        .collection("comments")
+                        .whereEqualTo("uid", uid)
+                        .whereEqualTo("comment", comment)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                FirebaseFirestore.getInstance()
+                                    .collection("images")
+                                    .document(contentUid!!)
+                                    .collection("comments")
+                                    .document(document.id)
+                                    .delete()
+                                    .addOnSuccessListener {
+                                        // 댓글 삭제 성공 처리
+                                    }
+                                    .addOnFailureListener { e ->
+                                        // 댓글 삭제 실패 처리
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            // 댓글 삭제 실패 처리
+                        }
+                }
+                .setNegativeButton("취소") { dialog, id ->
+                    dialog.cancel()
+                }
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
         }
 
         override fun getItemCount(): Int {
