@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">GGEstagram</string>
-    <string name="facebook_app_id">695557799236925</string>
-    <string name="fb_login_protocol_scheme">fb695557799236925</string>
+    <string name="facebook_app_id">261734852875167</string>
+    <string name="fb_login_protocol_scheme">fbd84ffdbe4966831fd791eea1dbb5f301</string>
+    <string name="facebook_client_token">d84ffdbe4966831fd791eea1dbb5f301</string>
     <string name="client_id_toekn">564761092046-mcu3f1lgrboiuhijs8ikrtr6kkrtfsvg.apps.googleusercontent.com</string>
 
     <!-- Sign In -->

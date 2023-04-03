@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,6 +74,50 @@ class CommentActivity : AppCompatActivity() {
                     }
                     notifyDataSetChanged()
                 }
+
+        }
+
+        private fun editCommentData(uid: String, comment: String) {
+            val alertDialogBuilder = AlertDialog.Builder(this@CommentActivity)
+            val editCommentEditText = EditText(this@CommentActivity)
+            editCommentEditText.setText(comment)
+            alertDialogBuilder.setView(editCommentEditText)
+                .setMessage("댓글을 수정하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("수정") { dialog, id ->
+                    val editedComment = editCommentEditText.text.toString()
+                    FirebaseFirestore.getInstance()
+                        .collection("images")
+                        .document(contentUid!!)
+                        .collection("comments")
+                        .whereEqualTo("uid", uid)
+                        .whereEqualTo("comment", comment)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                FirebaseFirestore.getInstance()
+                                    .collection("images")
+                                    .document(contentUid!!)
+                                    .collection("comments")
+                                    .document(document.id)
+                                    .update("comment", editedComment)
+                                    .addOnSuccessListener {
+                                        // 댓글 수정 성공 처리
+                                    }
+                                    .addOnFailureListener { e ->
+                                        // 댓글 수정 실패 처리
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            // 댓글 수정 실패 처리
+                        }
+                }
+                .setNegativeButton("취소") { dialog, id ->
+                    dialog.cancel()
+                }
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -96,6 +141,10 @@ class CommentActivity : AppCompatActivity() {
                 }
             view.comment_textview_comment.setOnClickListener {
                 deleteCommentData(comments[position].uid!!, comments[position].comment!!)
+            }
+            view.comment_textview_comment.setOnLongClickListener {
+                editCommentData(comments[position].uid!!, comments[position].comment!!)
+                true
             }
         }
 
