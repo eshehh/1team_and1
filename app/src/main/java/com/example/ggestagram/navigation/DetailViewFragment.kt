@@ -174,9 +174,12 @@ class DetailViewFragment : Fragment() {
             // 이것도 위에 것도 동일하게 만들어줘도 됐을듯함(viewholder.profile_image.setOnClickListener {
             //                메서드 이름 -> profilemove(position)
             //            })
+
+            // 이 코드를 통해 사용자는 클릭한 콘텐츠를 만든 사용자의 프로필로 이동할 수 있습니다.
            viewholder.profile_textview.setOnClickListener {
                 var userFragment = UserFragment()
                 var bundle = Bundle()
+               // destinationUid는 프로필을 보고 있는 사용자이고 userId는 보고 있는 콘텐츠를 게시한 사용자
                 bundle.putString("destinationUid",contentDTOs[position].uid)
                 bundle.putString("userId",contentDTOs[position].userId)
                 userFragment.arguments = bundle

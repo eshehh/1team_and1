@@ -1,9 +1,11 @@
 package com.example.ggestagram.navigation
 
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -130,6 +132,7 @@ class UserFragment : Fragment() {
         fragmentView?.account_recylerview?.layoutManager = GridLayoutManager(activity,3)
 
         // uid == currentUserUid일때 프로필 사진 클릭
+        // 자신의 정보일때로 넣어도 될듯하다
         if(uid == currentUserUid)fragmentView?.asccount_iv_profile?.setOnClickListener {
 
             var photoPickerIntent = Intent(Intent.ACTION_PICK)
@@ -138,7 +141,7 @@ class UserFragment : Fragment() {
 
 
         }
-
+        // 자신의 정보일때로 넣어도 될듯하다
         fragmentView?.camera?.setOnClickListener {
             activity?.finish()
             var intent = Intent(activity, CameraActivity::class.java)
@@ -149,30 +152,30 @@ class UserFragment : Fragment() {
         getFollowandFollowing()
         return fragmentView
     }
+
+//    override fun onStart() {
+//        super.onStart()
+
     fun getFollowandFollowing(){
         firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { value, error ->
-            if( value == null){
+            if( value == null || error != null){
+                Log.e(TAG, "Error fetching follower/following counts: ", error)
                 return@addSnapshotListener
             }
             var followDTO = value.toObject(FollowerDTO::class.java)
-            if(followDTO?.followingCount!=null){
-                fragmentView?.account_tv_following_counter?.text = followDTO?.followingCount?.toString()
-            }
-            if(followDTO?.followerCount!=null){
-                fragmentView?.account_tv_follower_counter?.text = followDTO?.followerCount?.toString()
+            followDTO?.let { dto ->
+                fragmentView?.account_tv_following_counter?.text = dto.followingCount.toString()
+                fragmentView?.account_tv_follower_counter?.text = dto.followerCount.toString()
                 if(FirebaseAuth.getInstance().uid == uid){
                     //나의 페이지 일경우
                     return@addSnapshotListener
                 }
-                if(followDTO?.followers.containsKey(currentUserUid!!)){
+                if(dto.followers.containsKey(currentUserUid!!)){
                     fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow_cancel)
-                }
-                else{
+                } else {
                     fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
-
                 }
             }
-
         }
     }
 
@@ -200,9 +203,10 @@ class UserFragment : Fragment() {
 
     // 팔로우
     fun requestFollow(){
-        // my follower
+        // 내 계정의 팔로워 정보 업데이트
         var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
         firestore?.runTransaction {
+            // 내 계정의 팔로워 정보 가져오기
             var followDTO =  it.get(tsDocFollowing!!).toObject(FollowerDTO::class.java)
 
             if (followDTO == null){
@@ -213,15 +217,19 @@ class UserFragment : Fragment() {
             }
 
             else {
+                // 상대방을 이미 팔로우하고 있는 경우 -> 언팔로우
                 if (followDTO.following.containsKey(uid)) {
                     followDTO?.followingCount = followDTO?.followingCount - 1
                     followDTO?.followers?.remove(uid)
                 } else {
+                    // 상대방을 팔로우하지 않은 경우 -> 팔로우
                     followDTO?.followingCount = followDTO?.followingCount + 1
                     followDTO?.followers[uid!!] = true
                 }
             }
+            // 업데이트된 팔로워 정보로 내 계정 정보 업데이트
             it.set(tsDocFollowing,followDTO)
+            // 트랜젝션 종료
             return@runTransaction
         }
 
@@ -339,6 +347,8 @@ class UserFragment : Fragment() {
                 }
             }
     }
+
+    // 프로필 사진 이미지 불러오기
     fun getProfileImage(){
         firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { value, error ->
             if (value == null) return@addSnapshotListener
