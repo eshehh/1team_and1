@@ -77,7 +77,8 @@ class AlarmFragment : Fragment(){
                     view.comment_textview_profile.text = str
                 }
                 1 -> {
-                    val str = alarmDTOList[position].userId + " " + getString(R.string.alarm_comment) + " of " + alarmDTOList[position].message
+                    val str = alarmDTOList[position].userId + " " + getString(R.string.alarm_comment)
+                    // + " of " + alarmDTOList[position].message
                     view.comment_textview_profile.text = str
                 }
                 2 -> {
@@ -86,6 +87,7 @@ class AlarmFragment : Fragment(){
                 }
             }
             view.comment_textview_profile.visibility = View.VISIBLE
+            view.comment_textview_comment.visibility = View.INVISIBLE
         }
     }
 }

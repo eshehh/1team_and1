@@ -25,12 +25,14 @@ import kotlinx.android.synthetic.main.item_detail.view.*
 
 class CommentActivity : AppCompatActivity() {
     var contentUid : String? = null
+    var destinationUid : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comment)
 
         contentUid = intent.getStringExtra("contentUid")
+        destinationUid = intent.getStringExtra("destinationUid")
 
         comment_recyclerview.adapter = CommentRecylerViewAdapter()
         comment_recyclerview.layoutManager = LinearLayoutManager(this)
@@ -44,6 +46,7 @@ class CommentActivity : AppCompatActivity() {
             comment.timeStamp = System.currentTimeMillis()
 
             FirebaseFirestore.getInstance().collection("images")?.document(contentUid!!)?.collection("comments").document().set(comment)
+            commentAlarm(destinationUid!!,comment_edit_message.text.toString())
             comment_edit_message.setText("")
         }
     }
@@ -58,6 +61,10 @@ class CommentActivity : AppCompatActivity() {
         alarmDTO.timestamp = System.currentTimeMillis()
         alarmDTO.message = message
         FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+
+        // 댓글 푸시 이벤트
+//        var msg = FirebaseAuth.getInstance()?.currentUser?.email + " "+ getString(R.string.alarm_comment)+ " of " + message
+//        FcmPush.instance.sendMessage(destinationUid,"Stagram",msg)
     }
 
     inner class CommentRecylerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -65,12 +72,14 @@ class CommentActivity : AppCompatActivity() {
         init {
             FirebaseFirestore.getInstance().collection("images").document(contentUid!!)
                 .collection("comments").orderBy("timeStamp")
-                .addSnapshotListener { value, error ->
+                .addSnapshotListener { querySnapshot, firebaseFirestoreException  ->
                     comments.clear()
-                    if (value == null) return@addSnapshotListener
+                    if (querySnapshot == null) return@addSnapshotListener
 
-                    for (snapshot in value.documents!!) {
+                    for (snapshot in querySnapshot.documents!!) {
                         comments.add(snapshot.toObject(ContentDTO.Comment::class.java!!)!!)
+                        // 댓글이 추가될 때마다 알람 추가
+                        commentAlarm(snapshot.get("uid") as String, snapshot.get("comment") as String)
                     }
                     notifyDataSetChanged()
                 }
@@ -131,14 +140,15 @@ class CommentActivity : AppCompatActivity() {
             view.comment_textview_comment.text = comments[position].comment
             view.comment_textview_profile.text = comments[position].userId
 
-            FirebaseFirestore.getInstance().collection("profileImages").document(comments[position].uid!!)
-                .get().addOnCompleteListener {
-                    if(it.isSuccessful){
-                        var url = it.result!!["image"]
-                        Glide.with(holder.itemView.context).load(url).apply(RequestOptions().circleCrop()).into(comment_imageview_profile!!)
+            FirebaseFirestore.getInstance().collection("profileImages").document(comments[position].uid!!).get().addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    var url = task.result!!["image"]
+                    if (url != null) {
+                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop())
+                            .into(view.comment_imageview_profile)
                     }
-
                 }
+            }
             view.comment_textview_comment.setOnClickListener {
                 deleteCommentData(comments[position].uid!!, comments[position].comment!!)
             }

@@ -128,8 +128,11 @@ class DetailViewFragment : Fragment() {
 //            val into = Glide.with(holder.itemView.context).load(contentDTOs[position]!!.imageUrl)
 //                .into(viewholder.profile_image)
             //프로필 사진 수정
+            //  Firestore에서 특정 사용자 ID('uid')와 연결된 프로필 이미지를 검색하고 Glide를 사용하여 ImageView에 표시
             firestore?.collection("profileImages")
+                    // Firestore의 profileImages 컬렉션에 액세스
                 ?.document(contentDTOs[position].uid!!)
+                    // contentDTOs 목록의 지정된 position에서 사용자 ID(uid)와 연결된 문서를 검색
                 ?.get()
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -137,8 +140,10 @@ class DetailViewFragment : Fragment() {
                         var url = task.result?.get("image")
 
                         if (url != null) {
+                            // url이 널이 아니면
                             Glide.with(holder.itemView.context).load(url)
                                 .apply(RequestOptions().circleCrop())
+                                    // 이미지에 원형 자르기를 적용
                                 .into(viewholder.profile_image)
                         }
 

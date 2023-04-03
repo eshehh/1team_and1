@@ -34,6 +34,8 @@ import com.google.firebase.firestore.FirebaseFirestore
         }
         fun readMyId(){
             var number = binding.edittextPhonenumber.text.toString()
+            // 사용자가 입력한 전화번호를 검색하고 일치하는 phoneNumber 필드가 있는 문서가 포함된 findids 컬렉션을 Firestore에 쿼리합니다.
+            // 일치하는 문서가 발견되면 'toObject' 메서드를 사용하여 'FindIdModel' 객체로 변환되고 전화번호와 연결된 이메일 ID를 보여주는 Toast 메시지가 표시됩니다.
             firestore.collection("findids").whereEqualTo("phoneNumber",number).get().addOnCompleteListener {
                     task ->
                 if(task.isSuccessful){

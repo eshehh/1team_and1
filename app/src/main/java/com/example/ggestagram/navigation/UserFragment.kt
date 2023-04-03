@@ -129,8 +129,8 @@ class UserFragment : Fragment() {
         fragmentView?.account_recylerview?.adapter = UserFragmentRecylerView()
         fragmentView?.account_recylerview?.layoutManager = GridLayoutManager(activity,3)
 
-        // 프로필 사진 클릭
-        fragmentView?.asccount_iv_profile?.setOnClickListener {
+        // uid == currentUserUid일때 프로필 사진 클릭
+        if(uid == currentUserUid)fragmentView?.asccount_iv_profile?.setOnClickListener {
 
             var photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
