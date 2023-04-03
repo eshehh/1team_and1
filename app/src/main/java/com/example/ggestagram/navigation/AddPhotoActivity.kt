@@ -55,6 +55,7 @@ class AddPhotoActivity : AppCompatActivity() {
                 finish()
             }
         }.launch(photoPickerIntent)
+//        startActivityForResult(photoPickerIntent,PICK_IMAGE_FROM_ALBUM)
 
 
         add_photon_btn.setOnClickListener {
@@ -67,6 +68,7 @@ class AddPhotoActivity : AppCompatActivity() {
 
         // 파일 이름 생성
         var timestamp = SimpleDateFormat("yyyyMMddmmss").format(Date())
+        // 이미지 이름을 현재시간으로 정해줘서 중복 방지
         var imageFilename = "Image_" + timestamp + "_.png"
         var storageRef = storage?.reference?.child("images")?.child(imageFilename)
 
@@ -87,7 +89,7 @@ class AddPhotoActivity : AppCompatActivity() {
             contentDTO.userId = auth?.currentUser?.email
             contentDTO.timeStamp = System.currentTimeMillis()
 
-            // Firestore에 ContentDTO 객체 저장
+            // Firestore에 ContentDTO 객체 저장(값 넘겨주기)
             firestore?.collection("images")?.document()?.set(contentDTO)
             setResult(Activity.RESULT_OK)
             finish()

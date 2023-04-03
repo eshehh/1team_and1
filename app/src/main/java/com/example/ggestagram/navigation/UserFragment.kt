@@ -156,6 +156,8 @@ class UserFragment : Fragment() {
 //    override fun onStart() {
 //        super.onStart()
 
+    // 여기서 팔로우와 언팔로우의 뷰를 뿌려준다
+    // 나의 페이지일 경우는 작동 X
     fun getFollowandFollowing(){
         firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { value, error ->
             if( value == null || error != null){
@@ -203,28 +205,31 @@ class UserFragment : Fragment() {
 
     // 팔로우
     fun requestFollow(){
-        // 내 계정의 팔로워 정보 업데이트
+        // 내 계정의 팔로잉 정보 업데이트
         var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
         firestore?.runTransaction {
-            // 내 계정의 팔로워 정보 가져오기
+            // 내 계정의 팔로잉 정보 가져오기
+            // 현재 사용자의(나 자신) 팔로잉 정보를 검색
             var followDTO =  it.get(tsDocFollowing!!).toObject(FollowerDTO::class.java)
 
             if (followDTO == null){
                 // 팔로우 정보가 없을 때 생성
                 followDTO = FollowerDTO()
+                // followingCount'를 1로 설정
                 followDTO!!.followingCount = 1
-                followDTO!!.followers[uid!!] = true
+                // 'following' 맵에 다른 사용자의 uid를 추가
+                followDTO!!.following[uid!!] = true
             }
 
             else {
                 // 상대방을 이미 팔로우하고 있는 경우 -> 언팔로우
                 if (followDTO.following.containsKey(uid)) {
                     followDTO?.followingCount = followDTO?.followingCount - 1
-                    followDTO?.followers?.remove(uid)
+                    followDTO?.following?.remove(uid)
                 } else {
                     // 상대방을 팔로우하지 않은 경우 -> 팔로우
                     followDTO?.followingCount = followDTO?.followingCount + 1
-                    followDTO?.followers[uid!!] = true
+                    followDTO?.following[uid!!] = true
                 }
             }
             // 업데이트된 팔로워 정보로 내 계정 정보 업데이트
@@ -233,13 +238,18 @@ class UserFragment : Fragment() {
             return@runTransaction
         }
 
+        //  다른 사용자의 팔로워 정보를 검색합니다.
         var tsDocFollower = firestore?.collection("users")?.document(uid!!)
         firestore?.runTransaction {
             var followDTO = it.get(tsDocFollower!!).toObject(FollowerDTO::class.java)
             if(followDTO == null){
+                // 기존 팔로워 정보가 없으면 새로운 'FollowerDTO' 객체를 생성
                 followDTO = FollowerDTO()
+                // followerCount'를 1로 설정
                 followDTO!!.followerCount = 1
+                // 현재 사용자의 uid를 'followers' 맵에 추가
                 followDTO!!.followers[currentUserUid!!] = true
+                // 'followerAlarm'이라는 함수를 호출하여 해당 사용자의 장치에 새로운 팔로워가 생겼다는 알림을 보냅니다.
                 followerAlarm(uid!!)
 
 
@@ -247,13 +257,19 @@ class UserFragment : Fragment() {
 
 
             else {
+                // 기존 팔로워 정보가 있는 경우 현재 사용자가 이미 다른 사용자의 팔로워인지 여부를 확인
                 if (followDTO!!.followers.containsKey(currentUserUid)) {
+                    // 팔로워인 경우 '팔로워 수'를 줄이고
                     followDTO!!.followerCount = followDTO!!.followerCount - 1
+                    // 팔로워' 맵에서 현재 사용자의 uid를 제거
                     followDTO!!.followers.remove(currentUserUid!!)
 
                 } else {
+                    // 팔로워가 아닌 경우 '팔로워 수'를 늘리고
                     followDTO!!.followerCount = followDTO!!.followerCount + 1
+                    // 재 사용자의 uid를 '팔로워' 맵에 추가합니다
                     followDTO!!.followers[currentUserUid!!] = true
+                    // 'followerAlarm'이라는 함수를 호출하여 해당 사용자의 장치에 새로운 팔로워가 생겼다는 알림을 보냅니다.
                     followerAlarm(uid!!)
                 }
             }

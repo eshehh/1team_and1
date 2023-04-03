@@ -66,13 +66,13 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             }
-//            STORAGE_CODE -> {
-//                for(grant in grantResults){
-//                    if(grant != PackageManager.PERMISSION_GRANTED){
-//                        Toast.makeText(this, "저장소 권한을 승인해 주세요", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//            }
+            STORAGE_CODE -> {
+                for(grant in grantResults){
+                    if(grant != PackageManager.PERMISSION_GRANTED){
+                        Toast.makeText(this, "저장소 권한을 승인해 주세요", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
         }
     }
 
@@ -105,10 +105,12 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
     // 주어진 파일 이름, MIME 유형, 비트맵을 사용하여 파일을 저장하는 함수
     fun saveFile(fileName:String, mimeType:String, bitmap: Bitmap): Uri?{
 
+        // 사진을 저장하기 위해 ContentValues()
+        // ContentProviders에 레코드를 삽입하거나 업데이트하기 위해 ContentResolver와 함께 사용됩니다.
         // 새로운 ContentValues 객체를 만듭니다.
         var CV = ContentValues()
 
-        // MediaStore 에 파일명, mimeType 을 지정
+        // MediaStore 에 파일명, mimeType 을 지정 , put() 메서드를 사용하여 CV 객체에 추가
         CV.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
         CV.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
 

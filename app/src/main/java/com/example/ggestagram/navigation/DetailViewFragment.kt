@@ -52,6 +52,9 @@ class DetailViewFragment : Fragment() {
         }
     }
 
+    // onCreateView' 함수는 프래그먼트의 레이아웃을 확장하고 RecyclerView를 초기화하는 역할을 합니다. LayoutInflater를 사용하여 R.layout.fragment_detail_view 리소스 파일에서 레이아웃을 확장하고,
+    // RecyclerView 어댑터를 DetailViewRecylerViewAdapter 내부 클래스의 인스턴스로 설정하고, 레이아웃 관리자를 LinearLayoutManager의 새 인스턴스로 설정합니다. .
+
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,11 +76,16 @@ class DetailViewFragment : Fragment() {
         return view
     }
 
+    // Firestore 데이터베이스의 데이터로 RecyclerView를 채우는 역할을 합니다.
+    // 이는 RecyclerView.Adapter 클래스를 확장하고 해당 메서드에 대한 구현을 제공합니다.
+    // 또한 ContentDTO 개체와 해당 UID를 보관할 두 개의 배열을 선언합니다.
     inner class DetailViewRecylerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         var contentDTOs: ArrayList<ContentDTO> = arrayListOf()
         var contentUidList: ArrayList<String> = arrayListOf()
 
+        //변경 사항이 감지되면 contentDTOs 및 contentUidList 배열이 지워지고 데이터베이스에서 새 데이터가 검색되어 이러한 배열에 추가됩니다.
+        // 'notifyDataSetChanged' 함수가 호출되어 어댑터에 변경 사항을 알리고 RecyclerView 새로 고침을 트리거합니다.
         init {
 
 
@@ -101,6 +109,7 @@ class DetailViewFragment : Fragment() {
 
         }
 
+        // 개별 상세 뷰
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             var view =
                 LayoutInflater.from(parent.context).inflate(R.layout.item_detail, parent, false)
@@ -111,6 +120,8 @@ class DetailViewFragment : Fragment() {
         inner class CustomViewHoler(view: View?) : RecyclerView.ViewHolder(view!!) {
 
         }
+
+        // 개별 상세 뷰를 뿌리는 데이터를 가지고 있음
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position:Int) {
 
             var viewholder = (holder as CustomViewHoler).itemView
