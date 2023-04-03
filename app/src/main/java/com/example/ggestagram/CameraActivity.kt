@@ -33,10 +33,10 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        // 카메라
+        // 카메라 호출
         camera.setOnClickListener(this)
 
-        // 사진 저장
+        // 메인으로
         picture.setOnClickListener(this)
 
 
