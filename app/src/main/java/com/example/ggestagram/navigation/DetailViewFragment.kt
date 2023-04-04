@@ -84,7 +84,7 @@ class DetailViewFragment : Fragment() {
         var contentDTOs: ArrayList<ContentDTO> = arrayListOf()
         var contentUidList: ArrayList<String> = arrayListOf()
 
-        //변경 사항이 감지되면 contentDTOs 및 contentUidList 배열이 지워지고 데이터베이스에서 새 데이터가 검색되어 이러한 배열에 추가됩니다.
+        //  변경 사항이 감지되면 contentDTOs 및 contentUidList 배열이 지워지고 데이터베이스에서 새 데이터가 검색되어 이러한 배열에 추가됩니다.
         // 'notifyDataSetChanged' 함수가 호출되어 어댑터에 변경 사항을 알리고 RecyclerView 새로 고침을 트리거합니다.
         init {
 

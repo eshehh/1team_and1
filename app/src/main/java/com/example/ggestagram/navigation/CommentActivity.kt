@@ -87,6 +87,7 @@ class CommentActivity : AppCompatActivity() {
         }
 
         private fun editCommentData(uid: String, comment: String) {
+
             val alertDialogBuilder = AlertDialog.Builder(this@CommentActivity)
             val editCommentEditText = EditText(this@CommentActivity)
             editCommentEditText.setText(comment)
@@ -103,12 +104,13 @@ class CommentActivity : AppCompatActivity() {
                         .whereEqualTo("comment", comment)
                         .get()
                         .addOnSuccessListener { documents ->
-                            for (document in documents) {
+                            if (documents.size() > 0) {
+                                val documentId = documents.documents[0].id
                                 FirebaseFirestore.getInstance()
                                     .collection("images")
                                     .document(contentUid!!)
                                     .collection("comments")
-                                    .document(document.id)
+                                    .document(documentId)
                                     .update("comment", editedComment)
                                     .addOnSuccessListener {
                                         // 댓글 수정 성공 처리
@@ -120,6 +122,47 @@ class CommentActivity : AppCompatActivity() {
                         }
                         .addOnFailureListener { e ->
                             // 댓글 수정 실패 처리
+                        }
+                }
+                .setNegativeButton("취소") { dialog, id ->
+                    dialog.cancel()
+                }
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
+
+        private fun deleteCommentData(uid: String, comment: String) {
+            val alertDialogBuilder = AlertDialog.Builder(this@CommentActivity)
+            alertDialogBuilder.setMessage("댓글을 삭제하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("삭제") { dialog, id ->
+                    FirebaseFirestore.getInstance()
+                        .collection("images")
+                        .document(contentUid!!)
+                        .collection("comments")
+                        .whereEqualTo("uid", uid)
+                        .whereEqualTo("comment", comment)
+                        .limit(1)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            if (documents.size() > 0) {
+                                val documentId = documents.documents[0].id
+                                FirebaseFirestore.getInstance()
+                                    .collection("images")
+                                    .document(contentUid!!)
+                                    .collection("comments")
+                                    .document(documentId)
+                                    .delete()
+                                    .addOnSuccessListener {
+                                        // 댓글 삭제 성공 처리
+                                    }
+                                    .addOnFailureListener { e ->
+                                        // 댓글 삭제 실패 처리
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            // 댓글 삭제 실패 처리
                         }
                 }
                 .setNegativeButton("취소") { dialog, id ->
@@ -149,6 +192,7 @@ class CommentActivity : AppCompatActivity() {
                     }
                 }
             }
+
             view.comment_textview_comment.setOnClickListener {
                 deleteCommentData(comments[position].uid!!, comments[position].comment!!)
             }
@@ -158,44 +202,7 @@ class CommentActivity : AppCompatActivity() {
             }
         }
 
-        private fun deleteCommentData(uid: String, comment: String) {
-            val alertDialogBuilder = AlertDialog.Builder(this@CommentActivity)
-            alertDialogBuilder.setMessage("댓글을 삭제하시겠습니까?")
-                .setCancelable(false)
-                .setPositiveButton("삭제") { dialog, id ->
-                    FirebaseFirestore.getInstance()
-                        .collection("images")
-                        .document(contentUid!!)
-                        .collection("comments")
-                        .whereEqualTo("uid", uid)
-                        .whereEqualTo("comment", comment)
-                        .get()
-                        .addOnSuccessListener { documents ->
-                            for (document in documents) {
-                                FirebaseFirestore.getInstance()
-                                    .collection("images")
-                                    .document(contentUid!!)
-                                    .collection("comments")
-                                    .document(document.id)
-                                    .delete()
-                                    .addOnSuccessListener {
-                                        // 댓글 삭제 성공 처리
-                                    }
-                                    .addOnFailureListener { e ->
-                                        // 댓글 삭제 실패 처리
-                                    }
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            // 댓글 삭제 실패 처리
-                        }
-                }
-                .setNegativeButton("취소") { dialog, id ->
-                    dialog.cancel()
-                }
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
-        }
+
 
         override fun getItemCount(): Int {
             return comments.size
