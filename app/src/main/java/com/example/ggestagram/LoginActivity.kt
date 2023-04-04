@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener{
 
     // GOOGLE_LOGIN_CODE 변수는 Google 로그인 요청 코드를 나타내는데 요청을 받을시
     private val GOOGLE_LOGIN_CODE = -1
-
+    // 구글 로그인 코드 변수를 초기화 해준다
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //  먼저, onCreate() 메서드를 오버라이드하고 함수를 정의해준다.
@@ -138,7 +138,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener{
             // if(it.resultCode == Activity.RESULT_OK) 코드는 이전 Activity에서 반환된 결과 코드가 성공인지 확인하며
             // 이전 Activity가 성공적으로 완료되었으면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
             val task = Auth.GoogleSignInApi.getSignInResultFromIntent(it.data!!)
-            // Auth.GoogleSignInApi.getSignInResultFromIntent(it.data!!) 함수를 사용하여 Google 로그인 결과를 가져온다
+            // 위 함수를 사용하여 Google 로그인 결과를 가져온다
             if(task!!.isSuccess){
                 // task!!.isSuccess 코드는 Google 로그인 결과가 성공이면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
                 var account = task.signInAccount
@@ -162,7 +162,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener{
     fun facebookLogin(){
         LoginManager.getInstance()
             .logInWithReadPermissions(this, Arrays.asList("public_profile","email"))
-        //로그인 메니저 인스턴스에 퍼미션 메소드를 호출하여 이메일 권한을 요천한다.
+        //로그인 메니저 인스턴스에 퍼미션 메소드를 호출하여 이메일 권한을 요청한다.
         LoginManager.getInstance()
             .registerCallback(callbackManager,object: FacebookCallback<LoginResult>{
                 // 로그인 메소드를 이용하여 로그인 콜백을 등혹한 후 Facebook 로그인이
@@ -192,9 +192,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener{
         addOnCompleteListener {
                 it->
             if(it.isSuccessful){
-                //Login Success
                 // 로그인 작업이 완료되면 addOnCompleteListener를 호출하여
                 //파이어 베이스의 로그인 성공여부를 확인한다
+
                 Log.e(TAG,"signinEmail ")
                 //Login Success 로그인 성공 후 로그 메세지 출력
                 moveMainPage(it.result.user)

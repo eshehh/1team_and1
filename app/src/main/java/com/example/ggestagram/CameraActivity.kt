@@ -105,7 +105,7 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
     // 주어진 파일 이름, MIME 유형, 비트맵을 사용하여 파일을 저장하는 함수
     fun saveFile(fileName:String, mimeType:String, bitmap: Bitmap): Uri?{
 
-        // 사진을 저장하기 위해 ContentValues()
+        // fileName, mimeType, bitmap 생성하고 저장하기위해 ContentValues()
         // ContentProviders에 레코드를 삽입하거나 업데이트하기 위해 ContentResolver와 함께 사용됩니다.
         // 새로운 ContentValues 객체를 만듭니다.
         var CV = ContentValues()
@@ -159,6 +159,8 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
         // 카메라 액티비티가 성공적으로 완료되었는지 확인하기
         if(resultCode == Activity.RESULT_OK){
             // 액티비티가 카메라 액티비티인지 확인하기
+            //  이 코드는 onActivityResult() 함수에서 사용되며, 카메라 앱에서 결과가 성공적으로 반환되었는지 확인합니다.
+            //  결과 코드가 Activity.RESULT_OK와 같으면, 즉 카메라 앱에서 촬영된 이미지가 있으면 아래의 코드 블록이 실행됩니다.
             when(requestCode){
                 // 카메라 액티비티가 썸네일 이미지를 Bitmap으로 반환한 경우
                 CAMERA_CODE -> {
