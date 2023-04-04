@@ -101,7 +101,7 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    // 사진 저장
+    // 촬영된 사진을 저장하기 위해서 파일을 저장하는 메서드
     // 주어진 파일 이름, MIME 유형, 비트맵을 사용하여 파일을 저장하는 함수
     fun saveFile(fileName:String, mimeType:String, bitmap: Bitmap): Uri?{
 
@@ -110,22 +110,22 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
         // 새로운 ContentValues 객체를 만듭니다.
         var CV = ContentValues()
 
-        // MediaStore 에 파일명, mimeType 을 지정 , put() 메서드를 사용하여 CV 객체에 추가
+        // MediaStore 에 파일명, mimeType 을 지정 , put() 메서드를 사용하여 CV 객체에 추가 ,MediaStore는 외부 저장소를 관리하는 데이터베이스
         CV.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
         CV.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
 
-        // 안정성 검사
+        // 안정성을 위해
         // 디바이스가 Android Q 이상인 경우, 이미지를 대기 중인 상태로 설정합니다.
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             CV.put(MediaStore.Images.Media.IS_PENDING, 1)
         }
 
-        // 이미지를 MediaStore에 삽입하고 해당 URI를 가져옵니다.
+        // 이미지를 MediaStore에 저장하고 해당 URI를 가져옵니다.
         // MediaStore 에 파일을 저장
         val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, CV)
         // URI가 null이 아닌 경우, 비트맵을 파일에 작성합니다.
         if(uri != null){
-            // URI에 대한 파일 디스크립터를 엽니다
+            // URI에 대한 파일 디스크립터를 엽니다 파일스크립터를 통해 파일을 읽거나 쓸 수 있게 되는데  모드를 "w"로 지정해 쓰기 위한 것
             var scriptor = contentResolver.openFileDescriptor(uri, "w")
 
             // 파일 디스크립터에 대한 FileOutputStream을 생성합니다.

@@ -109,7 +109,7 @@ class DetailViewFragment : Fragment() {
 
         }
 
-        // 개별 상세 뷰
+        // 개별 상세 뷰(틀)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             var view =
                 LayoutInflater.from(parent.context).inflate(R.layout.item_detail, parent, false)

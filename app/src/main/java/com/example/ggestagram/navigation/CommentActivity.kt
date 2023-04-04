@@ -46,7 +46,7 @@ class CommentActivity : AppCompatActivity() {
             comment.timeStamp = System.currentTimeMillis()
 
             FirebaseFirestore.getInstance().collection("images")?.document(contentUid!!)?.collection("comments").document().set(comment)
-            commentAlarm(destinationUid!!,comment_edit_message.text.toString())
+//            commentAlarm(destinationUid!!,comment_edit_message.text.toString())
             comment_edit_message.setText("")
         }
     }
@@ -79,7 +79,7 @@ class CommentActivity : AppCompatActivity() {
                     for (snapshot in querySnapshot.documents!!) {
                         comments.add(snapshot.toObject(ContentDTO.Comment::class.java!!)!!)
                         // 댓글이 추가될 때마다 알람 추가
-                        commentAlarm(snapshot.get("uid") as String, snapshot.get("comment") as String)
+//                        commentAlarm(snapshot.get("uid") as String, snapshot.get("comment") as String)
                     }
                     notifyDataSetChanged()
                 }

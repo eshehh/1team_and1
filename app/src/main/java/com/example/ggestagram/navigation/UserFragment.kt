@@ -157,6 +157,7 @@ class UserFragment : Fragment() {
 //        super.onStart()
 
     // 여기서 팔로우와 언팔로우의 뷰를 뿌려준다
+    // 팔로워 팔로잉 수도 뿌려준다
     // 나의 페이지일 경우는 작동 X
     fun getFollowandFollowing(){
         firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { value, error ->
@@ -183,6 +184,12 @@ class UserFragment : Fragment() {
 
 //    override fun onStop() {
 //        super.onStop()
+//        // 스냅샷 제거(오류 방지)
+//        loadfollow?.remove()
+//        loadprofileimage?.remove()
+//    }
+
+//        2.
 //        ex) var = followListenerRegistration: ListenerRegistration? = null
 //        followListenerRegistration?.remove
 //

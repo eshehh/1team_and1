@@ -221,9 +221,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener{
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
         // 구글 로그인을 수행한 후에 구글 클라이언트에 반환하는 개체
         var credential = GoogleAuthProvider.getCredential(account?.idToken,null)
-        // GoogleAuthProvider를 사용하여 사용자의 아이디토근을 포함하는 자격 증명 (credential) 개체를 만든다.
+        // GoogleAuthProvider를 사용하여 사용자의 아이디 토근을 포함하는 자격 증명 (credential) 그리덴쳐 객체를 만든다.
         auth?.signInWithCredential(credential)?.
-            //Firebase 인증 객체에서 signInWithCredential() 메서드를 호출하여 자격 증명을 사용하여 사용자를 인증한다.
+            //Firebase 인증 객체에서 signInWithCredential()크리덴쳐 메서드를 호출하여 자격 증명을 사용하여 사용자를 인증한다.
         addOnCompleteListener {
             // 앞선 페이스북 로그인 성공시랑 동일하다
             it->
